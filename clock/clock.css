@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: #f4f4f4;
+}
+
+.clock {
+  --size: min(80vmin, 500px);
+  --radius: calc(var(--size) / 2);
+  --tick-radius: calc(var(--radius) * 0.87);
+
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 calc(var(--size) * 0.03) #333,
+    0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dial {
+  position: absolute;
+  inset: 0;
+}
+
+.tick {
+  --angle: calc((var(--i) * 6deg) - 90deg);
+  --x: calc(cos(var(--angle)) * var(--tick-radius));
+  --y: calc(sin(var(--angle)) * var(--tick-radius));
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: calc(var(--x) - 50%) calc(var(--y) - 50%);
+  rotate: calc(var(--i) * 6deg);
+
+  width: 2px;
+  height: calc(var(--size) * 0.02);
+  background: #333;
+  border-radius: 1px;
+}
+
+.tick:nth-child(5n + 1) {
+  width: calc(var(--size) * 0.05);
+  height: calc(var(--size) * 0.12);
+  border-radius: 2px;
+  background: #1a1a1a;
+}
+
+
+.hands {
+  position: absolute;
+  inset: 0;
+}
+
+.hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+}
+
+.hour-hand {
+  width: calc(var(--size) * 0.055);
+  height: calc(var(--radius) * 0.55);
+  translate: -50% 0;
+  background: #1a1a1a;
+  border-radius: 3px 3px 2px 2px;
+
+  animation: sweep 43200s linear infinite;
+  animation-delay: var(--hour-delay);
+}
+
+.minute-hand {
+  width: calc(var(--size) * 0.042);
+  height: calc(var(--radius) * 0.75);
+  translate: -50% 0;
+  background: #1a1a1a;
+  border-radius: 2px;
+
+  animation: sweep 3600s steps(60, end) infinite;
+  animation-delay: var(--minute-delay);
+}
+
+.second-hand {
+  width: 0;
+  height: 0;
+  translate: 0 0;
+
+  animation: second-sweep 60s linear infinite;
+  animation-delay: var(--second-delay);
+}
+
+@keyframes sweep {
+  from { rotate: 0deg; }
+  to   { rotate: 360deg; }
+}
+
+@keyframes second-sweep {
+  0%     { rotate: 0deg; }
+  97.5%  { rotate: 360deg; }
+  100%   { rotate: 360deg; }
+}
+
+
+.second-tail {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 100%;
+  width: calc(var(--size) * 0.012);
+  height: calc(var(--radius) * 0.22);
+  background: #d42b1e;
+  border-radius: 2px;
+}
+
+.second-shaft {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: calc(var(--size) * 0.012);
+  height: calc(var(--radius) * 0.6);
+  background: #d42b1e;
+  border-radius: 1px;
+}
+
+.second-dot {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--radius) * 0.6);
+  translate: -50% 0;
+  width: calc(var(--size) * 0.07);
+  height: calc(var(--size) * 0.07);
+  background: #d42b1e;
+  border-radius: 50%;
+}
+
+.second-cap {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 50%;
+  width: calc(var(--size) * 0.035);
+  height: calc(var(--size) * 0.035);
+  background: #d42b1e;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.center-cap {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: calc(var(--size) * 0.051);
+  height: calc(var(--size) * 0.051);
+  background: #1a1a1a;
+  border-radius: 50%;
+  z-index: 10;
+}
