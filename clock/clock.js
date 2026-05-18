@@ -28,3 +28,56 @@ const clock = document.querySelector('.clock');
 clock.style.setProperty('--hour-delay', `-${hourOffset}s`);
 clock.style.setProperty('--minute-delay', `-${minuteOffset}s`);
 clock.style.setProperty('--second-delay', `-${secondOffset}s`);
+
+// Double-tap/double-click to toggle fullscreen
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+    document.documentElement.requestFullscreen();
+  }
+}
+
+document.addEventListener('dblclick', toggleFullscreen);
+
+let lastTap = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTap < 300) {
+    e.preventDefault();
+    toggleFullscreen();
+  }
+  lastTap = now;
+});
+
+// Wake Lock: keep screen awake only in fullscreen
+let wakeLock = null;
+
+async function requestWakeLock() {
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+    } catch (_) {}
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    wakeLock.release();
+    wakeLock = null;
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) {
+    requestWakeLock();
+  } else {
+    releaseWakeLock();
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && document.fullscreenElement) {
+    requestWakeLock();
+  }
+});
